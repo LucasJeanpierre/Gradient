@@ -27,4 +27,6 @@ yarn-error.log*
 .venv
 .idea
 *.sqlite3
-GradientRestApi/GradientRestApi__pycache__/
+*.pyc
+GradientRestApi/GradientRestApi/__pycache__
+
