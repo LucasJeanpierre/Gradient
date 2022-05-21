@@ -23,7 +23,7 @@ class NoteViewSet(viewsets.ModelViewSet):
             category = self.request.GET.get('category')
             return Note.objects.filter(category=category)
         
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = NoteSerializer
 
 """
