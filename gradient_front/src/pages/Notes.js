@@ -1,46 +1,60 @@
 import axios from "axios";
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
+import {useLocation} from "react-router-dom";
 
 const Notes = () => {
 
     const [notes, setNotes] = useState([]);
+    const [newNote, setNewNote] = useState('');
     const [cookies, setCookie, removeCookie] = useCookies();
-
-    const refreshToken = () => {
-        if (cookies.refresh && cookies.token) {
-            removeCookie('token');
-            axios
-                .post("http://localhost:8000/api/token/refresh/", {
-                    refresh: cookies.refresh
-                })
-                .then(res => {
-                    console.log(res);
-                    setCookie('token', res.data.access, { path: '/', secure: true, sameSite: true });
-                    window.location.reload(false);
-                })
-        }
-    }
+    const search = useLocation().search;  
+    const category = new URLSearchParams(search).get('category');
 
 
-    useEffect(() => {
+ 
+
+
+    const getNotes = () => {
+        var url = "http://localhost:8000/api/notes/?category=" + category;
+        console.log(url);
         axios
-            .get("http://localhost:8000/api/notes/?category=1", {
+            .get(url, {
                 headers: {
                     Authorization: `Bearer ${cookies.token}`
                 }
             })
             .then(res => {
                 setNotes(res.data.results);
-                console.log(notes);
             })
             .catch(err => {
-                if (err.response.status === 401) {
-                    refreshToken();
-                }
                 console.log(err);
             });
-    }, []);
+    }
+
+    const addNote = () => {
+        var url = "http://localhost:8000/api/notes/";
+        axios
+            .post(url, {
+                "title": newNote,
+                "description": "",
+                "category": category,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            })
+            .then(res => {
+                console.log(res.data);
+                getNotes();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+
+    useEffect(getNotes, []);
 
 
     return (
@@ -55,6 +69,8 @@ const Notes = () => {
                     </li>
                 ))}
             </ul>
+            <input type="text" value={newNote} onChange={(e) => setNewNote(e.target.value)} />
+            <button onClick={addNote}>Add Note</button>
         </div>
     )
 };

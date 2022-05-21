@@ -1,10 +1,33 @@
 import axios from "axios";
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
 
     const [cookies, setCookie, removeCookie] = useCookies();
+    const navigate = useNavigate();
+
+    const refresh = () => {
+        if (cookies.refresh && cookies.token) {
+            removeCookie('token');
+            axios
+                .post("http://localhost:8000/api/token/refresh/", {
+                    refresh: cookies.refresh
+                })
+                .then(res => {
+                    console.log(res);
+                    setCookie('token', res.data.access, { path: '/', secure: true, sameSite: true });
+                    navigate("/");
+                })
+                .catch(err => {
+                    console.log(err);
+                    removeCookie('refresh');
+                    removeCookie('token');
+                });
+
+        }
+    }
 
     const sendForm = (e) => {
         e.preventDefault();
@@ -18,11 +41,16 @@ const Login = () => {
                 console.log(res);
                 setCookie('token', res.data.access, { path: '/', secure: true, sameSite: true} );
                 setCookie('refresh', res.data.refresh, { path: '/', secure: true, sameSite: true} );
+                navigate("/");
+
             })
             .catch(err => {
                 console.log(err);
             });
     }
+
+    useEffect(refresh, []);
+
     return (
         <div>
             <h1>Login Form</h1>
