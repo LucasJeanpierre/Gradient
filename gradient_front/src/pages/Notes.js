@@ -1,18 +1,18 @@
 import axios from "axios";
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
-import {useLocation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Notes = () => {
 
     const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState('');
     const [cookies, setCookie, removeCookie] = useCookies();
-    const search = useLocation().search;  
+    const search = useLocation().search;
     const category = new URLSearchParams(search).get('category');
 
 
- 
+
 
 
     const getNotes = () => {
@@ -53,6 +53,23 @@ const Notes = () => {
             });
     }
 
+    const deleteNote = (id) => {
+        var url = "http://localhost:8000/api/notes/" + id + "/";
+        axios
+            .delete(url, {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            })
+            .then(res => {
+                console.log(res.data);
+                getNotes();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
 
     useEffect(getNotes, []);
 
@@ -66,6 +83,7 @@ const Notes = () => {
                         <h2>{note.title}</h2>
                         <p>{note.description}</p>
                         <p>{note.created_at}</p>
+                        <button onClick={() => deleteNote(note.id)}>Delete</button>
                     </li>
                 ))}
             </ul>

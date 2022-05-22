@@ -1,6 +1,4 @@
 from django.http import HttpResponse
-from django.shortcuts import render
-from requests import delete, get, post
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import Category, Note, Task
@@ -18,10 +16,17 @@ NoteViewSet
 return a list of notes for a given category
 """
 class NoteViewSet(viewsets.ModelViewSet):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = NoteSerializer
     
+    """
+    if action is retrieve, return the note with the given id
+    if action is list, return notes for a given category (get parameter category)
+    """
     def get_queryset(self):
         if self.action == 'retrieve':
-            return Note.objects.all()
+            return Note.objects.filter(id=self.kwargs['pk'])
         else:
             category = self.request.GET.get('category')
             return Note.objects.filter(category=category)
@@ -31,49 +36,61 @@ class NoteViewSet(viewsets.ModelViewSet):
         note.delete()
         return HttpResponse(status=204)
 
-    def update(self, request, pk=None):
+    def partial_update(self, request, pk=None):
         note = Note.objects.get(pk=pk)
-        note.title = request.data['title']
-        note.description = request.data['description']
+        try:
+            for key in request.data:
+                if key == 'title':
+                    note.title = request.data[key]
+                elif key == 'description':
+                    note.description = request.data[key]
+        except:
+            pass
         note.modified_at = datetime.datetime.now()
         note.save()
         return HttpResponse(status=202)
         
-    permission_classes = [IsAuthenticated]
-    serializer_class = NoteSerializer
 
 """
 TaskViewSet
 return a list of tasks for a given category
 """
 class TaskViewSet(viewsets.ModelViewSet):
-        
-        def get_queryset(self):
-            if self.action == 'retrieve':
-                return Task.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = TaskSerializer
+    
+    """
+    if action is retrieve, return the task with the given id
+    if action is list, return tasks for a given category (get parameter category)
+    """
+    def get_queryset(self):
+        if self.action == 'retrieve':
+            return Task.objects.filter(id=self.kwargs['pk'])
+        if (self.action == 'list'):
+            category = self.request.GET.get('category')
+            if (category):
+                return Task.objects.filter(category=category)
             else:
-                print('no retrieve')
-                category = self.request.GET.get('category')
-                if (category):
-                    return Task.objects.filter(category=category)
-                else:
-                    return[]
+                return[]
 
-        def destroy(self, request, pk=None):
-            task = Task.objects.get(pk=pk)
-            task.delete()
-            return HttpResponse(status=202)
+    def destroy(self, request, pk=None):
+        task = Task.objects.get(pk=pk)
+        task.delete()
+        return HttpResponse(status=202)
 
-        def update(self, request, pk=None):
-            task = Task.objects.get(pk=pk)
-            print(request.data)
-            task.title = request.data['title']
-            task.description = request.data['description']
-            task.done = request.data['done']
-            task.modified_at = datetime.datetime.now()
-            task.save()
-            return HttpResponse(status=202)
-            
-
-        permission_classes = [IsAuthenticated]
-        serializer_class = TaskSerializer
+    def partial_update(self, request, pk=None):
+        task = Task.objects.get(pk=pk)
+        try:
+            for key in request.data:
+                if key == 'title':
+                    task.title = request.data['title']
+                if key == 'description':
+                    task.description = request.data['description']
+                if key == 'done':
+                    task.done = request.data['done']
+        except:
+            pass
+        task.modified_at = datetime.datetime.now()
+        task.save()
+        return HttpResponse(status=202)
+        

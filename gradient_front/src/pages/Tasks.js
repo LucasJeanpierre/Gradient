@@ -64,7 +64,26 @@ const Tasks = () => {
                 console.log(err);
             });
     }
-    
+
+    const updateTask = (id, e) => {
+        axios
+            .patch("http://localhost:8000/api/tasks/" + id + "/", {
+                "done": e.target.checked,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            })
+            .then(res => {
+                console.log(res.data);
+                getTask();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+
 
 
     useEffect(getTask, []);
@@ -77,7 +96,8 @@ const Tasks = () => {
                 {tasks.map(task => (
                     <li key={task.id}>
                         <h2>{task.title}</h2>
-                        <input type="checkbox" defaultChecked={task.done} />
+                        <input type="checkbox" onChange={(e) => {updateTask(task.id, e)}} defaultChecked={task.done} />
+
                         <p>{task.description}</p>
                         <p>{task.created_at}</p>
                         <button onClick={() => deleteTask(task.id)}>Delete {task.id}</button>
