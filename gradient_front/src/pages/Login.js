@@ -39,8 +39,8 @@ const Login = () => {
             })
             .then(res => {
                 console.log(res);
-                setCookie('token', res.data.access, { path: '/', secure: true, sameSite: true} );
-                setCookie('refresh', res.data.refresh, { path: '/', secure: true, sameSite: true} );
+                setCookie('token', res.data.access, { path: '/', secure: true, sameSite: true });
+                setCookie('refresh', res.data.refresh, { path: '/', secure: true, sameSite: true });
                 navigate("/");
 
             })

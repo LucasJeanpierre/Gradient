@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation } from "react-router-dom";
+import Note from '../components/Note.js';
 
 const Notes = () => {
 
@@ -53,6 +54,7 @@ const Notes = () => {
             });
     }
 
+
     const deleteNote = (id) => {
         var url = "http://localhost:8000/api/notes/" + id + "/";
         axios
@@ -77,16 +79,11 @@ const Notes = () => {
     return (
         <div>
             <h1>Notes</h1>
-            <ul>
+            <div className="card-group">
                 {notes.map(note => (
-                    <li key={note.id}>
-                        <h2>{note.title}</h2>
-                        <p>{note.description}</p>
-                        <p>{note.created_at}</p>
-                        <button onClick={() => deleteNote(note.id)}>Delete</button>
-                    </li>
+                    <Note note={note} deleteNote={deleteNote} />
                 ))}
-            </ul>
+            </div>
             <input type="text" value={newNote} onChange={(e) => setNewNote(e.target.value)} />
             <button onClick={addNote}>Add Note</button>
         </div>

@@ -1,13 +1,14 @@
 import axios from "axios";
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
+import Category from "../components/Category.js";
+
 
 const Categories = () => {
 
     const [cookies, setCookie, removeCookie] = useCookies();
     const [categories, setCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
-
 
 
     const getCategories = () => {
@@ -67,21 +68,38 @@ const Categories = () => {
             });
     }
 
+    const handleClick = (e, id, type) => {
+        switch (type) {
+            case 'notes':
+                window.location.href = "/notes/?category=" + id;
+                break;
+
+            case 'tasks':
+                window.location.href = "/tasks/?category=" + id;
+                break;
+        
+            default:
+                break;
+        }
+    }
+
     useEffect(getCategories, []);
 
 
     return (
-        <div>   
-            <ul>
+
+        <div>
+            <div className="card-group">
                 {categories.map(category => (
-                    <li key={category.id}>
-                        <h2>{category.name} : <a href={`/notes/?category=${category.id}`}>Notes</a><a href={`/tasks/?category=${category.id}`}>Tasks</a></h2>
-                        <button onClick={() => deleteCategory(category.id)}>Delete</button>
-                    </li>
+                    <Category category={category} handleClick={handleClick} deleteCategory={deleteCategory} />
                 ))}
-            </ul>
-            <input type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
-            <button onClick={() => { addCategory() }}>Add Category</button>
+            </div>
+            <div className="input-group mb-3">
+                <span class="input-group-text">+</span>
+                <input className="form-control" type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
+                <button className="btn btn-outline-secondary" onClick={() => { addCategory() }}>Add Category</button>
+            </div>
+            
         </div>
     )
 };

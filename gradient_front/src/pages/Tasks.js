@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation } from "react-router-dom";
+import Task from '../components/Task.js';
 
 const Tasks = () => {
 
@@ -92,18 +93,11 @@ const Tasks = () => {
     return (
         <div>
             <h1>Tasks</h1>
-            <ul>
+            <div className="card-group">
                 {tasks.map(task => (
-                    <li key={task.id}>
-                        <h2>{task.title}</h2>
-                        <input type="checkbox" onChange={(e) => {updateTask(task.id, e)}} defaultChecked={task.done} />
-
-                        <p>{task.description}</p>
-                        <p>{task.created_at}</p>
-                        <button onClick={() => deleteTask(task.id)}>Delete {task.id}</button>
-                    </li>
+                    <Task task={task} updateTask={updateTask} deleteTask={deleteTask} />
                 ))}
-            </ul>
+            </div>
             <input type="text" value={newTask} onChange={(e) => setNewTask(e.target.value)} />
             <button onClick={addTask}>Add Task</button>
         </div>
