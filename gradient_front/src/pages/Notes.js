@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation } from "react-router-dom";
 import Note from '../components/Note.js';
+import ModalNote from "../components/ModalNote.js";
 
 const Notes = () => {
 
@@ -81,7 +82,10 @@ const Notes = () => {
             <h1>Notes</h1>
             <div className="card-group">
                 {notes.map(note => (
-                    <Note note={note} deleteNote={deleteNote} />
+                    <>
+                        <Note note={note} deleteNote={deleteNote} />
+                        <ModalNote note={note} />
+                    </>
                 ))}
             </div>
             <input type="text" value={newNote} onChange={(e) => setNewNote(e.target.value)} />

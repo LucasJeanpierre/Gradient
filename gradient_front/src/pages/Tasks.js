@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation } from "react-router-dom";
 import Task from '../components/Task.js';
+import ModalTask from "../components/ModalTask.js";
 
 const Tasks = () => {
 
@@ -95,7 +96,11 @@ const Tasks = () => {
             <h1>Tasks</h1>
             <div className="card-group">
                 {tasks.map(task => (
+                    <>
                     <Task task={task} updateTask={updateTask} deleteTask={deleteTask} />
+                    <ModalTask task={task}/>
+                    </>
+                    
                 ))}
             </div>
             <input type="text" value={newTask} onChange={(e) => setNewTask(e.target.value)} />
