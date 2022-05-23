@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import Category from "../components/Category.js";
+import ModalCategory from "../components/ModalCategory.js";
 
 
 const Categories = () => {
@@ -91,11 +92,14 @@ const Categories = () => {
         <div>
             <div className="card-group">
                 {categories.map(category => (
-                    <Category category={category} handleClick={handleClick} deleteCategory={deleteCategory} />
+                    <>
+                        <Category category={category} handleClick={handleClick} deleteCategory={deleteCategory} />
+                        <ModalCategory category={category} />
+                    </>
                 ))}
             </div>
             <div className="input-group mb-3">
-                <span class="input-group-text">+</span>
+                <span className="input-group-text">+</span>
                 <input className="form-control" type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
                 <button className="btn btn-outline-secondary" onClick={() => { addCategory() }}>Add Category</button>
             </div>
