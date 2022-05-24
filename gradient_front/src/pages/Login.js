@@ -12,7 +12,7 @@ const Login = () => {
         if (cookies.refresh && cookies.token) {
             removeCookie('token');
             axios
-                .post("http://localhost:8000/api/token/refresh/", {
+                .post("/api/token/refresh/", {
                     refresh: cookies.refresh
                 })
                 .then(res => {
@@ -33,7 +33,7 @@ const Login = () => {
         e.preventDefault();
         const form = e.target;
         axios
-            .post("http://localhost:8000/api/token/", {
+            .post("/api/token/", {
                 username: form.username.value,
                 password: form.password.value
             })

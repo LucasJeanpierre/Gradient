@@ -14,10 +14,9 @@ const Tasks = () => {
     const category = new URLSearchParams(search).get('category');
 
 
-
     const getTask = () => {
         axios
-            .get("http://localhost:8000/api/tasks/?category=" + category, {
+            .get("/api/tasks/?category=" + category, {
                 headers: {
                     Authorization: `Bearer ${cookies.token}`
                 }
@@ -30,60 +29,7 @@ const Tasks = () => {
             });
     }
 
-    const addTask = () => {
-        axios
-            .post("http://localhost:8000/api/tasks/", {
-                "title": newTask,
-                "description": "",
-                "category": category,
-                "done": false,
-            }, {
-                headers: {
-                    Authorization: `Bearer ${cookies.token}`
-                }
-            })
-            .then(res => {
-                console.log(res.data);
-                getTask();
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
-
-    const deleteTask = (id) => {
-        axios
-            .delete("http://localhost:8000/api/tasks/" + id + "/", {
-                headers: {
-                    Authorization: `Bearer ${cookies.token}`
-                }
-            })
-            .then(res => {
-                console.log(res.data);
-                getTask();
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
-
-    const updateTask = (id, e) => {
-        axios
-            .patch("http://localhost:8000/api/tasks/" + id + "/", {
-                "done": e.target.checked,
-            }, {
-                headers: {
-                    Authorization: `Bearer ${cookies.token}`
-                }
-            })
-            .then(res => {
-                console.log(res.data);
-                getTask();
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
+    
 
 
 
@@ -97,14 +43,14 @@ const Tasks = () => {
             <div className="card-group">
                 {tasks.map(task => (
                     <>
-                    <Task task={task} updateTask={updateTask} deleteTask={deleteTask} />
+                    <Task task={task} />
                     <ModalTask task={task}/>
                     </>
                     
                 ))}
             </div>
-            <input type="text" value={newTask} onChange={(e) => setNewTask(e.target.value)} />
-            <button onClick={addTask}>Add Task</button>
+            <button className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#EmptyModalTask" >Add Task modal</button>
+            <ModalTask task={false} category_id={category} />
         </div>
     )
 };

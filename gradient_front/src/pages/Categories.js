@@ -9,13 +9,11 @@ const Categories = () => {
 
     const [cookies, setCookie, removeCookie] = useCookies();
     const [categories, setCategories] = useState([]);
-    const [newCategory, setNewCategory] = useState('');
 
 
     const getCategories = () => {
-        var url = "http://localhost:8000/api/categories/";
         axios
-            .get(url, {
+            .get("/api/categories/", {
                 headers: {
                     Authorization: `Bearer ${cookies.token}`
                 }
@@ -30,44 +28,6 @@ const Categories = () => {
             });
     }
 
-    const addCategory = () => {
-        var url = "http://localhost:8000/api/categories/";
-        axios
-            .post(url, {
-                "name": newCategory,
-                "description": "",
-                "color": "#000000",
-            }, {
-                headers: {
-                    Authorization: `Bearer ${cookies.token}`
-                }
-            })
-            .then(res => {
-                console.log(res.data);
-                getCategories();
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
-
-    const deleteCategory = (id) => {
-        var url = "http://localhost:8000/api/categories/" + id + "/";
-        axios
-
-            .delete(url, {
-                headers: {
-                    Authorization: `Bearer ${cookies.token}`
-                }
-            })
-            .then(res => {
-                console.log(res.data);
-                getCategories();
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
 
     const handleClick = (e, id, type) => {
         switch (type) {
@@ -78,7 +38,7 @@ const Categories = () => {
             case 'tasks':
                 window.location.href = "/tasks/?category=" + id;
                 break;
-        
+
             default:
                 break;
         }
@@ -93,17 +53,14 @@ const Categories = () => {
             <div className="card-group">
                 {categories.map(category => (
                     <>
-                        <Category category={category} handleClick={handleClick} deleteCategory={deleteCategory} />
+                        <Category category={category} handleClick={handleClick}/>
                         <ModalCategory category={category} />
                     </>
                 ))}
             </div>
-            <div className="input-group mb-3">
-                <span className="input-group-text">+</span>
-                <input className="form-control" type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
-                <button className="btn btn-outline-secondary" onClick={() => { addCategory() }}>Add Category</button>
-            </div>
-            
+            <button className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#EmptyModalCategory" >Add Category modal</button>
+            <ModalCategory category={false} />
+
         </div>
     )
 };

@@ -2,19 +2,62 @@ import { useState } from "react";
 import axios from "axios";
 import { useCookies } from 'react-cookie';
 
-const ModalTask = ({ task }) => {
-    const modalId = "ModalTask" + task.id;
+const ModalTask = ({ task, category_id }) => {
+
+    const modalId = task ? "ModalTask" + task.id : "EmptyModalTask";
 
     const [cookies, setCookie, removeCookie] = useCookies();
 
-    const [title, setTitle] = useState(task.title);
-    const [description, setDescription] = useState(task.description);
-    const [done, setDone] = useState(task.done);
+    const [title, setTitle] = useState(task ? task.title : "");
+    const [description, setDescription] = useState(task ? task.description : "");
+    const [done, setDone] = useState(task ? task.done : false);
+
 
     const handleSubmit = () => {
         console.log('handleSubmit');
+        task ? editTask(task.id) : addTask();
+    }
+
+    const addTask = () => {
         axios
-            .patch("http://localhost:8000/api/tasks/" + task.id + "/", {
+            .post("/api/tasks/", {
+                "title": title,
+                "description": description,
+                "category": category_id,
+                "done": done,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            })
+            .then(res => {
+                console.log(res.data);
+                window.location.reload();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    const deleteTask = (id) => {
+        axios
+            .delete("/api/tasks/" + id + "/", {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            })
+            .then(res => {
+                console.log(res.data);
+                window.location.reload();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    const editTask = (id) => {
+        axios
+            .patch("/api/tasks/" + id + "/", {
                 "title": title,
                 "description": description,
                 "done": done,
@@ -55,6 +98,7 @@ const ModalTask = ({ task }) => {
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={() => { deleteTask(task ? task.id : null) }}>delete</button>
                         <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={handleSubmit}>Save changes</button>
                     </div>
                 </div>

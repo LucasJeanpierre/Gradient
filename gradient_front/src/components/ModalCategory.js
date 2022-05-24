@@ -3,18 +3,28 @@ import axios from "axios";
 import { useCookies } from 'react-cookie';
 
 const ModalCategory = ({ category }) => {
-    const modalId = "ModalCategory" + category.id;
+
+
+
+    const modalId = category ? "ModalCategory" + category.id : "EmptyModalCategory";
+
+
 
     const [cookies, setCookie, removeCookie] = useCookies();
 
-    const [name, setName] = useState(category.name);
-    const [description, setDescription] = useState(category.description);
-    const [color, setColor] = useState(category.color);
+    const [name, setName] = useState(category ? category.name : "");
+    const [description, setDescription] = useState(category ? category.description : "");
+    const [color, setColor] = useState(category ? category.color : "#000000");
 
     const handleSubmit = () => {
         console.log('handleSubmit');
+
+        category ? editCategory() : addCategory();
+    }
+
+    const addCategory = () => {
         axios
-            .patch("http://localhost:8000/api/categories/" + category.id + "/", {
+            .post("/api/categories/", {
                 "name": name,
                 "description": description,
                 "color": color,
@@ -26,6 +36,47 @@ const ModalCategory = ({ category }) => {
             .then(res => {
                 console.log(res.data);
                 window.location.reload();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    const deleteCategory = (id) => {
+        if (id != null) {
+            var url = "/api/categories/" + id + "/";
+            axios
+
+                .delete(url, {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                })
+                .then(res => {
+                    console.log(res.data);
+                    window.location.reload();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    }
+
+    const editCategory = () => {
+        axios
+            .patch("/api/categories/" + category.id + "/", {
+                "name": name,
+                "description": description,
+                "color": color,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            })
+            .then(res => {
+                console.log(res.data);
+                window.location.reload();
+
             })
             .catch(err => {
                 console.log(err);
@@ -55,6 +106,7 @@ const ModalCategory = ({ category }) => {
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={() => { deleteCategory(category ? category.id : null) }}>delete</button>
                         <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={handleSubmit}>Save changes</button>
                     </div>
                 </div>

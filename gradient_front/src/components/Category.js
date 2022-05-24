@@ -1,4 +1,4 @@
-const Category = ({ category, handleClick, deleteCategory }) => {
+const Category = ({ category, handleClick }) => {
     const modalId = "#ModalCategory" + category.id;
 
     const modalColor = {
@@ -9,7 +9,6 @@ const Category = ({ category, handleClick, deleteCategory }) => {
         <div className="card">
             <div className="card-header" style={modalColor}>
                 <h5 className="card-title">{category.name}</h5>
-                <button className="btn btn-danger" onClick={(e) => { deleteCategory(category.id) }}>-</button>
                 <span data-bs-toggle="modal" data-bs-target={modalId}>
                     &#x2699;
                 </span>

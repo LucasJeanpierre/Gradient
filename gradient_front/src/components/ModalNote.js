@@ -2,18 +2,63 @@ import { useState } from "react";
 import axios from "axios";
 import { useCookies } from 'react-cookie';
 
-const ModalNote = ({ note }) => {
-    const modalId = "ModalNote" + note.id;
+const ModalNote = ({ note, category_id }) => {
+
+    const modalId = note ? "ModalNote" + note.id : "EmptyModalNote";
 
     const [cookies, setCookie, removeCookie] = useCookies();
 
-    const [title, setTitle] = useState(note.title);
-    const [description, setDescription] = useState(note.description);
+    const [title, setTitle] = useState(note ? note.title : "");
+    const [description, setDescription] = useState(note ? note.description : "");
 
     const handleSubmit = () => {
         console.log('handleSubmit');
+        
+        note ? editNote(note.id) : addNote()
+    }
+
+    const addNote = () => {
+        var url = "/api/notes/";
         axios
-            .patch("http://localhost:8000/api/notes/" + note.id + "/", {
+            .post(url, {
+                "title": title,
+                "description": description,
+                "category": category_id,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            })
+            .then(res => {
+                console.log(res.data);
+                window.location.reload();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+
+    const deleteNote = (id) => {
+        var url = "/api/notes/" + id + "/";
+        axios
+            .delete(url, {
+                headers: {
+                    Authorization: `Bearer ${cookies.token}`
+                }
+            })
+            .then(res => {
+                console.log(res.data);
+                window.location.reload();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    const editNote = (id) => {
+        axios
+            .patch("/api/notes/" + id + "/", {
                 "title": title,
                 "description": description,
             }, {
@@ -50,6 +95,7 @@ const ModalNote = ({ note }) => {
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={() => { deleteNote(note ? note.id : null) }}>delete</button>
                         <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={handleSubmit}>Save changes</button>
                     </div>
                 </div>

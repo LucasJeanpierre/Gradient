@@ -15,10 +15,8 @@ const Notes = () => {
 
 
 
-
-
     const getNotes = () => {
-        var url = "http://localhost:8000/api/notes/?category=" + category;
+        var url = "/api/notes/?category=" + category;
         console.log(url);
         axios
             .get(url, {
@@ -34,44 +32,7 @@ const Notes = () => {
             });
     }
 
-    const addNote = () => {
-        var url = "http://localhost:8000/api/notes/";
-        axios
-            .post(url, {
-                "title": newNote,
-                "description": "",
-                "category": category,
-            }, {
-                headers: {
-                    Authorization: `Bearer ${cookies.token}`
-                }
-            })
-            .then(res => {
-                console.log(res.data);
-                getNotes();
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
-
-
-    const deleteNote = (id) => {
-        var url = "http://localhost:8000/api/notes/" + id + "/";
-        axios
-            .delete(url, {
-                headers: {
-                    Authorization: `Bearer ${cookies.token}`
-                }
-            })
-            .then(res => {
-                console.log(res.data);
-                getNotes();
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
+    
 
 
     useEffect(getNotes, []);
@@ -83,13 +44,13 @@ const Notes = () => {
             <div className="card-group">
                 {notes.map(note => (
                     <>
-                        <Note note={note} deleteNote={deleteNote} />
+                        <Note note={note} />
                         <ModalNote note={note} />
                     </>
                 ))}
             </div>
-            <input type="text" value={newNote} onChange={(e) => setNewNote(e.target.value)} />
-            <button onClick={addNote}>Add Note</button>
+            <button className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#EmptyModalNote" >Add Note modal</button>
+            <ModalNote note={false} category_id={category} />
         </div>
     )
 };
