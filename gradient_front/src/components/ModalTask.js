@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useCookies } from 'react-cookie';
 
-const ModalTask = ({ task, category_id }) => {
+const ModalTask = ({ task, category_id, getTasks }) => {
 
     const modalId = task ? "ModalTask" + task.id : "EmptyModalTask";
 
@@ -32,7 +32,8 @@ const ModalTask = ({ task, category_id }) => {
             })
             .then(res => {
                 console.log(res.data);
-                window.location.reload();
+                getTasks();
+                
             })
             .catch(err => {
                 console.log(err);
@@ -48,7 +49,7 @@ const ModalTask = ({ task, category_id }) => {
             })
             .then(res => {
                 console.log(res.data);
-                window.location.reload();
+                getTasks();
             })
             .catch(err => {
                 console.log(err);
@@ -68,7 +69,7 @@ const ModalTask = ({ task, category_id }) => {
             })
             .then(res => {
                 console.log(res.data);
-                window.location.reload();
+                getTasks();
             })
             .catch(err => {
                 console.log(err);

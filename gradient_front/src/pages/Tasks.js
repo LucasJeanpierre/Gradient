@@ -14,7 +14,7 @@ const Tasks = () => {
     const category = new URLSearchParams(search).get('category');
 
 
-    const getTask = () => {
+    const getTasks = () => {
         axios
             .get("/api/tasks/?category=" + category, {
                 headers: {
@@ -29,12 +29,8 @@ const Tasks = () => {
             });
     }
 
-    
 
-
-
-
-    useEffect(getTask, []);
+    useEffect(getTasks, []);
 
 
     return (
@@ -43,14 +39,14 @@ const Tasks = () => {
             <div className="card-group">
                 {tasks.map(task => (
                     <>
-                    <Task task={task} />
-                    <ModalTask task={task}/>
+                    <Task task={task}/>
+                    <ModalTask task={task} getTasks={getTasks}/>
                     </>
                     
                 ))}
             </div>
             <button className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#EmptyModalTask" >Add Task modal</button>
-            <ModalTask task={false} category_id={category} />
+            <ModalTask task={false} category_id={category} getTasks={getTasks}/>
         </div>
     )
 };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useCookies } from 'react-cookie';
 
-const ModalNote = ({ note, category_id }) => {
+const ModalNote = ({ note, category_id, getNotes }) => {
 
     const modalId = note ? "ModalNote" + note.id : "EmptyModalNote";
 
@@ -31,7 +31,7 @@ const ModalNote = ({ note, category_id }) => {
             })
             .then(res => {
                 console.log(res.data);
-                window.location.reload();
+                getNotes();
             })
             .catch(err => {
                 console.log(err);
@@ -49,7 +49,7 @@ const ModalNote = ({ note, category_id }) => {
             })
             .then(res => {
                 console.log(res.data);
-                window.location.reload();
+                getNotes();
             })
             .catch(err => {
                 console.log(err);
@@ -68,7 +68,7 @@ const ModalNote = ({ note, category_id }) => {
             })
             .then(res => {
                 console.log(res.data);
-                window.location.reload();
+                getNotes();
             })
             .catch(err => {
                 console.log(err);

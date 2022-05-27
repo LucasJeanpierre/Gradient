@@ -31,8 +31,7 @@ const Notes = () => {
                 console.log(err);
             });
     }
-
-    
+   
 
 
     useEffect(getNotes, []);
@@ -45,12 +44,12 @@ const Notes = () => {
                 {notes.map(note => (
                     <>
                         <Note note={note} />
-                        <ModalNote note={note} />
+                        <ModalNote note={note} getNotes={getNotes} />
                     </>
                 ))}
             </div>
             <button className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#EmptyModalNote" >Add Note modal</button>
-            <ModalNote note={false} category_id={category} />
+            <ModalNote note={false} category_id={category} getNotes={getNotes} />
         </div>
     )
 };

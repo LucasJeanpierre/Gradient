@@ -10,8 +10,13 @@ import Logout from "./pages/Logout";
 import Categories from "./pages/Categories";
 import Tasks from "./pages/Tasks";
 import NoPage from "./pages/NoPage";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import { useEffect, useState } from "react";
 
 export default function App() {
+
+
   return (
     <BrowserRouter>
       <Routes>

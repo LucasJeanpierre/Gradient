@@ -1,7 +1,6 @@
-const Task = ({ task}) => {
+const Task = ({ task }) => {
 
     const modalId = "#ModalTask" + task.id;
-
 
     return (
         <div className="card">

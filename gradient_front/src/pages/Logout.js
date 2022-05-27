@@ -1,13 +1,20 @@
-import axios from "axios";
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 
-const Login = () => {
+const Logout = () => {
 
     const [cookies, setCookie, removeCookie] = useCookies();
-    removeCookie('token');
-    removeCookie('refresh');
-    
+
+
+    const removeCookies = () => {
+        if (cookies.refresh && cookies.token) {
+            removeCookie('token');
+            removeCookie('refresh');
+        }
+    }
+
+    useEffect(removeCookies, []);
+
     return (
         <div>
             <h1>You have been logout</h1>
@@ -15,4 +22,4 @@ const Login = () => {
     )
 };
 
-export default Login;
+export default Logout;

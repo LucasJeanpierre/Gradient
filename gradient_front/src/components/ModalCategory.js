@@ -2,12 +2,11 @@ import { useState } from "react";
 import axios from "axios";
 import { useCookies } from 'react-cookie';
 
-const ModalCategory = ({ category }) => {
+const ModalCategory = ({ category, getCategories}) => {
 
 
 
     const modalId = category ? "ModalCategory" + category.id : "EmptyModalCategory";
-
 
 
     const [cookies, setCookie, removeCookie] = useCookies();
@@ -35,7 +34,7 @@ const ModalCategory = ({ category }) => {
             })
             .then(res => {
                 console.log(res.data);
-                window.location.reload();
+                getCategories();
             })
             .catch(err => {
                 console.log(err);
@@ -54,7 +53,7 @@ const ModalCategory = ({ category }) => {
                 })
                 .then(res => {
                     console.log(res.data);
-                    window.location.reload();
+                    getCategories();
                 })
                 .catch(err => {
                     console.log(err);
@@ -75,7 +74,7 @@ const ModalCategory = ({ category }) => {
             })
             .then(res => {
                 console.log(res.data);
-                window.location.reload();
+                getCategories();
 
             })
             .catch(err => {

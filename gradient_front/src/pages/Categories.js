@@ -54,12 +54,12 @@ const Categories = () => {
                 {categories.map(category => (
                     <>
                         <Category category={category} handleClick={handleClick}/>
-                        <ModalCategory category={category} />
+                        <ModalCategory category={category} getCategories={getCategories}/>
                     </>
                 ))}
             </div>
             <button className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#EmptyModalCategory" >Add Category modal</button>
-            <ModalCategory category={false} />
+            <ModalCategory category={false} getCategories={getCategories}/>
 
         </div>
     )

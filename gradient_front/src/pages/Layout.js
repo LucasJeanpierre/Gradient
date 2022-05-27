@@ -1,13 +1,37 @@
 import { Outlet } from "react-router-dom";
 import { useCookies } from 'react-cookie';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Layout = () => {
 
     const [cookies, setCookie, removeCookie] = useCookies();
+    const [connected, setConnected] = useState(false);
     var titleColor;
 
-    if (cookies.token != undefined) {
+  
+    const checkConnection = () => {
+        if (cookies.token != undefined) {
+            axios
+                .get("/api/categories/", {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`
+                    }
+                })
+                .then(res => {
+                    console.log(res.data);
+                    setConnected(true);
+                })
+                .catch(err => {
+                    console.log(err);
+                    setConnected(false);
+                });
+        }
+    }
+
+    useEffect(checkConnection, []);
+
+    if (connected) {
         titleColor = {
             color: 'green'
         };
